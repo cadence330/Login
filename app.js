@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./models/userModel');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
 
 const app = express();
 
@@ -21,16 +22,21 @@ app.get('/', (req, res) => {
   res.render('index');
 })
 
+// User Login 
 app.get('/login', (req, res) => {
   res.render('login');
 })
 
-// User Login 
 app.post('/login', async (req, res) => {
 
-  const { username, password } = req.body;
+  const { usernameOrEmail, password } = req.body;
+
   try {
-    const user = await User.findOne({ username });
+    const userByUsername = await User.findOne({ username: usernameOrEmail });
+
+    const userByEmail = await User.findOne({ email: usernameOrEmail });
+
+    const user = userByUsername || userByEmail;
 
     if (!user) {
       return res.status(404).send('User not found');
@@ -49,11 +55,11 @@ app.post('/login', async (req, res) => {
   }
 })
 
+// Create a New Account
 app.get('/create', (req, res) => {
   res.render('create');
 })
 
-// Create a new account
 app.post('/create', async (req, res) => {
   try {
     const hashedPassword = 
@@ -62,6 +68,7 @@ app.post('/create', async (req, res) => {
     const newUser = new User({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
+      email: req.body.email,
       username: req.body.username,
       password: hashedPassword
       });
@@ -74,3 +81,14 @@ app.post('/create', async (req, res) => {
     console.error(error);
   }
 })
+
+// Reset Password
+app.get('/reset-password', (req, res) => {
+  res.render('reset-password')
+})
+
+app.post('/reset-password', (req, res) => {
+  const userEmail = req.body.email;
+})
+
+
