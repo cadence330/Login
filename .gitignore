@@ -1,0 +1,6 @@
+# Ignore node_modules directory
+/node_modules
+
+# Ignore any files or directories that start with . (e.g., .env)
+
+# Add other patterns as needed
