@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const User = require('./models/userModel');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
+const generateResetPassword = require('./scripts/reset-password')
 
 const app = express();
 
@@ -16,7 +17,6 @@ mongoose.connect(dbURI, {
 
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }))
-app.use(express.json());
 
 app.get('/', (req, res) => {
   res.render('index');
@@ -87,8 +87,48 @@ app.get('/reset-password', (req, res) => {
   res.render('reset-password')
 })
 
-app.post('/reset-password', (req, res) => {
-  const userEmail = req.body.email;
+app.post('/reset-password', async (req, res) => {
+  try {
+    const userEmail = req.body.email;
+
+    const user = await User.findOne({ email: userEmail });
+
+    if (!user) {
+      res.send('Email not found')
+    } else {
+      const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+          user: 'domonic.davis.test@gmail.com',
+          pass: process.env.EMAIL_AUTHORIZATION
+        }
+      });
+
+      const temporaryPassword = generateResetPassword();
+      
+      const mailOptions = {
+        from: 'domonic.davis.test@gmail.com',
+        to: userEmail,
+        subject: 'Reset Password',
+        text: `Your temporary password is ${temporaryPassword}`,
+      };
+      
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+        console.error('Error sending email:', error);
+        res.send("User not found")
+      } else {
+        console.log('Email sent:', info.response);
+      }
+      });
+    
+      res.send('Email Sent');
+    }
+
+  } catch (error) {
+    console.log('error found');
+  }
 })
+
 
 
