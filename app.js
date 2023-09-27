@@ -105,12 +105,20 @@ app.post('/reset-password', async (req, res) => {
       });
 
       const temporaryPassword = generateResetPassword();
+
+      const hashedTemporaryPassword =
+      await bcrypt.hash(temporaryPassword, 10);
+
+      user.temporaryPassword = hashedTemporaryPassword;
+
+      const updatedUser = await user.save();
+      console.log('User updated successfully:', updatedUser);
       
       const mailOptions = {
         from: 'domonic.davis.test@gmail.com',
         to: userEmail,
         subject: 'Reset Password',
-        text: `Your temporary password is ${temporaryPassword}`,
+        text: `Your temporary password is ${temporaryPassword}: Please click the link to reset password. `,
       };
       
       transporter.sendMail(mailOptions, (error, info) => {
@@ -126,9 +134,51 @@ app.post('/reset-password', async (req, res) => {
     }
 
   } catch (error) {
-    console.log('error found');
+    console.log('error found', error);
   }
 })
 
+// New Password
+  app.get('/new-password', async (req, res) => {
+    res.render('new-password')
+  })
+
+  app.post('/new-password', async (req, res) => {
+    try {
+      const userEmail = req.body.email;
+      const userTemporaryPassword = req.body['temporary-password'];
+      const userNewPassword = req.body['new-password'];
+      const confirmNewPassword = req.body['confirm-new-password'];
+
+      const userByEmail = await User.findOne({ email: userEmail });
+
+      const temporaryPasswordMatch = await bcrypt.compare(userTemporaryPassword, userByEmail.temporaryPassword);
+
+      if (!userByEmail) {
+        return res.status(400).send('Email not found');
+      }
+  
+      if (!temporaryPasswordMatch) {
+        return res.status(400).send("Invalid temporary password");
+      }
+  
+      if (userNewPassword !== confirmNewPassword) {
+        return res.status(400).send("Passwords do not match");
+      }
+
+      const hashedPassword = 
+      await bcrypt.hash(userNewPassword, 10);
+
+      userByEmail.password = hashedPassword;
+      const updatedUser = await userByEmail.save();
+
+      console.log('Password updated successfully:', updatedUser);
+
+      res.send(`Your password has successfully been reset!\n <button class="LoginBtn">Login</button>`)
+  } 
+  catch (error) {
+    console.log('Error', error)
+    res.status(500).send('Internal Server Error');
+  }})
 
 

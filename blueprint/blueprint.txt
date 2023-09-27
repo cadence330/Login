@@ -1,3 +1,3 @@
-1. Create a form on an html page that a user can enter their username and password.
+Ideas: Once logged in user can add goals(text), with ratings for each day. Monthly goals, weekly goals, financial, exercise. Weekly email sending stats of progress of the week.
 
-2. 
+Work on sessions, JSON Web Tokens next. Look into oAuth later. 
