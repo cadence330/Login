@@ -3,7 +3,10 @@ const mongoose = require('mongoose');
 const User = require('./models/userModel');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
-const generateResetPassword = require('./scripts/reset-password')
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const generateResetPassword = require('./public/scripts/reset-password');
+const { isAuthenticated } = require('./public/scripts/authentication')
 
 const app = express();
 
@@ -17,6 +20,21 @@ mongoose.connect(dbURI, {
 
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser());
+app.use(
+  session({
+    secret: "test for now and fix later",
+    resave: false,
+    saveUninitialized: false,
+  })
+)
+app.use(express.static('public', { 
+  setHeaders: (res, path) => {
+    if (path.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    }
+  },
+}));
 
 app.get('/', (req, res) => {
   res.render('index');
@@ -45,8 +63,9 @@ app.post('/login', async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (passwordMatch) {
-      // req.session.userId = user._id;
-      res.status(200).send('Login successful');
+      req.session.userId = user._id;
+      res.redirect('/dashboard');
+      // res.cookie('Sky', 'blue', { httpOnly: true })
     } else {
       res.status(401).send('Incorrect password.');
     }
@@ -181,4 +200,22 @@ app.post('/reset-password', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }})
 
+  // Dashboard
+  app.get('/dashboard', isAuthenticated, async (req, res) => {
+    const user = await User.findOne({ _id: req.session.userId });
+    const name = user.firstName;
+    res.render('dashboard', { name });
+  })
+
+  // Logout
+  app.get('/logout', isAuthenticated, (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        console.log('Error destroying session:', err)
+        res.status(500).send('Internal Server Error')
+      } else {
+        res.render('logout');
+      }
+    })
+  })
 
