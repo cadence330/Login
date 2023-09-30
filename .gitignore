@@ -2,5 +2,5 @@
 /node_modules
 
 # Ignore any files or directories that start with . (e.g., .env)
-
+.env
 # Add other patterns as needed

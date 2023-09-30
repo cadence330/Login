@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser());
 app.use(
   session({
-    secret: "test for now and fix later",
+    secret: process.env.SECRET_STRING,
     resave: false,
     saveUninitialized: false,
   })
