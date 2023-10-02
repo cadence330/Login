@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser());
 app.use(
   session({
-    secret: process.env.SECRET_STRING,
+    secret: 'randomstringfornowandfixlater',
     resave: false,
     saveUninitialized: false,
   })
@@ -33,8 +33,11 @@ app.use(express.static('public', {
     if (path.endsWith('.js')) {
       res.setHeader('Content-Type', 'application/javascript');
     }
-  },
-}));
+    if (path.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    }
+  }
+}))
 
 app.get('/', (req, res) => {
   res.render('index');

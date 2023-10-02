@@ -4,36 +4,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <link rel="stylesheet" href="/styles/create.css" type="text/css">
 </head>
 <body>
-  <form action="/create" method="post">
-    <label for="first-name">First Name</label>
-    <div>
-      <input type="text" name="firstName" id="first-name" required>
-    </div>
-    <label for="last-name">Last Name</label>
-    <div>
-      <input type="text" name="lastName" id="last-name" required>
-    </div>
-    <label for="email">Email</label>
-    <div>
-      <input type="text" name="email" id="email" required>
-    </div>
-    <label for="username">Username</label>
-    <div>
-      <input type="text" name="username" id="username" required>
-    </div>
-    <label for="password">Password</label>
-    <div>
-      <input type="password" name="password" id="password" required>
-    </div>
-    <label for="confirm-password">Confirm Password</label>
-    <div>
-      <input type="password" name="confirm-password" id="confirm-password" required>
-    </div>
-    <div>
-      <button type="submit">Sign Up</button>
-    </div>
-  </form>
+  <div class="content">
+    <form action="/create" method="post">
+      <label for="first-name">First Name</label>
+      <div>
+        <input type="text" name="firstName" id="first-name" class="input" required>
+      </div>
+      <label for="last-name">Last Name</label>
+      <div>
+        <input type="text" name="lastName" id="last-name" class="input" required>
+      </div>
+      <label for="email">Email</label>
+      <div>
+        <input type="text" name="email" id="email" class="input" required>
+      </div>
+      <label for="username">Username</label>
+      <div>
+        <input type="text" name="username" id="username" class="input" required>
+      </div>
+      <label for="password">Password</label>
+      <div>
+        <input type="password" name="password" id="password" class="input" required>
+      </div>
+      <label for="confirm-password">Confirm Password</label>
+      <div>
+        <input type="password" name="confirm-password" id="confirm-password" class="input" required>
+      </div>
+      <div>
+        <button type="submit" class="sign-up-btn">Sign Up</button>
+      </div>
+    </form>
+  </div>
 </body>
 </html>

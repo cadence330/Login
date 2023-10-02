@@ -1,0 +1,42 @@
+body {
+  height: 500px;
+  background-color: whitesmoke;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+}
+
+.input {
+  border-color: rgb(229, 229, 229);
+  margin-bottom: 8px;
+  height: 22px;
+  border-radius: 4px;
+  border-width: 1px;
+  padding: 6px 6px 6px 6px;
+}
+
+.login-btn {
+  color: white;
+  background-color: rgb(33, 100, 217);
+  border-style: none;
+  padding: 6px 6px 6px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.register-now {
+  text-decoration: none;
+  color: rgb(33, 100, 217);
+  font-size: 14px;
+}
+
+.forgot-password {
+  text-decoration: none;
+  color: gray;
+  font-size: 14px;
+}
